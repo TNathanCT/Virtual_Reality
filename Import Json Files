@@ -1,0 +1,92 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using System.IO;
+using System;
+//using TMPro;
+
+public class **** : MonoBehaviour
+{
+
+
+    public string url;
+    public RootObject loadedData;
+    public GameObject Camera;
+    RedButton RB;
+    Random rd;
+    public string templink;
+
+    public GameObject Parent;
+    CentertheChildren CTC;
+
+    void Start()
+    {
+        CTC = GetComponent<CentertheChildren>();
+        rd = GetComponent<Random>();
+        RB = FindObjectOfType<RedButton>();
+        string path = "";
+        //string path = "";
+        string dataAsJson = File.ReadAllText(path);
+ 
+
+
+
+        loadedData = new RootObject();
+        loadedData = JsonUtility.FromJson<RootObject>(dataAsJson);
+
+
+
+        //using (WWW www = new WWW(url))
+        //{
+        //    yield return www;
+        //    string dataAsJSON = www.text;
+        //    loadedData = new RootObject();
+        //    loadedData = JsonUtility.FromJson<RootObject>(dataAsJSON);
+        //    //loadedData.data<float> longitude = new loadedData.data<float>();
+        //}
+
+        //templink = UnityEngine.Random.Range(0, rd.tempfile.data.Count);
+
+
+
+        for (int i = 0; i < loadedData.data.Count; i++)
+        {
+            GameObject Gobj = Instantiate(Camera);
+
+            Gobj.transform.parent = Parent.transform;
+
+            CTC.CenterOnChildren(Parent.transform);
+            float Lat = (float)loadedData.data[i].latitude * 5;
+            float Long = (float)loadedData.data[i].longitude * 5;
+            Gobj.transform.position = new Vector3(Lat, 0, Long);
+    
+          //url = loadedData.data[i].url; //THIS IS THE CORRECT ONE
+          //Gobj.transform.gameObject.GetComponent<RedButton>().url = templink.ToString();
+            Gobj.transform.gameObject.GetComponent<RedButton>().description = loadedData.data[i].description;
+         // loadedData.data[i].url = RB.url;
+         // loadedData.data[i].url = Gobj.transform.gameObject.GetComponent<RedButton>().url;
+         // url = Gobj.transform.gameObject.GetComponent<CCTV>().loadedData.data[i].url;
+        }
+    }
+}
+
+//[System.Serializable]
+//public class Datum
+//{
+//    public bool available;
+//    public double chainage;
+//    public string description;
+//    public string guid;
+//    public int id;
+//    public double latitude;
+//    public int linkId;
+//    public double longitude;
+//    public string url;
+//}
+
+//[System.Serializable]
+//public class RootObject
+//{
+//    public List<Datum> data;
+//}
+
