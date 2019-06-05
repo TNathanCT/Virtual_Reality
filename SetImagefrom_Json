@@ -1,0 +1,79 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using TMPro;
+
+public class RedButton : MonoBehaviour {
+    
+    public string url;
+    public GameObject Screen;
+    public Renderer thisRender;
+    public TextMeshPro text;
+    public string description;
+
+    private void Start()
+    {
+        text.enabled = false;
+        Screen.SetActive(false);
+    }
+
+    void UsetheScreen(string ActivatetheURL)
+    {
+        StartCoroutine(LoadFromLikeCoroutine(ActivatetheURL));
+    }
+
+
+
+    public IEnumerator LoadFromLikeCoroutine(string LoadtheURL)
+    {
+
+        WWW wwwLoader = new WWW(LoadtheURL);   // create WWW object pointing to the z
+        yield return wwwLoader;         // start loading whatever in that url ( delay happens here )
+        thisRender.material.color = Color.white;              // set white
+        thisRender.material.mainTexture = wwwLoader.texture;  // set loaded image
+
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.gameObject.tag == "GameController")
+        {
+       
+            Screen.SetActive(true);
+            UsetheScreen(url);
+
+
+            text.enabled = true;
+            text.SetText(description);
+
+
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.tag == "GameController")
+        {
+         
+            Screen.SetActive(true);
+            UsetheScreen(url);
+
+            text.enabled = true;
+            text.SetText(description);
+
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.tag == "GameController")
+        {
+            text.enabled = false;
+            Screen.SetActive(false);
+
+        }
+    }
+
+
+
+}
