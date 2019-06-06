@@ -1,0 +1,80 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using System.IO;
+
+public class RoadSigns : MonoBehaviour {
+
+    public string message;
+    public SignDatum RDatum;
+    public RootSign RootSign;
+    public GameObject Signs;
+    SignButton SB;
+
+    public GameObject Parent;
+    void Start()
+    {
+        SB = FindObjectOfType<SignButton>();
+        string pathtoSign = "";
+        string SignData = File.ReadAllText(pathtoSign);
+
+
+        RootSign = new RootSign();
+        RootSign = JsonUtility.FromJson<RootSign>(SignData);
+
+
+        Parent.transform.position = new Vector3 (0f, 0f, 0f);
+      
+
+        GameObject[] Gobj = GameObject.FindGameObjectsWithTag("RedButton");
+
+        for (int z = 0; z < RootSign.data.Count; z++)
+        {
+            GameObject signgobj = Instantiate(Signs);
+
+       
+            float Lat = (float)RootSign.data[z].vmsList[0].latitude*4;
+            float Long = (float)RootSign.data[z].vmsList[0].longitude*4;
+            signgobj.transform.position = new Vector3(Lat, 0, Long);
+            signgobj.transform.parent = Parent.transform;
+            signgobj.transform.gameObject.GetComponent<SignButton>().message = RootSign.data[z].vmsList[0].message;
+
+        }
+
+
+
+
+
+    }
+}
+
+[System.Serializable]
+public class VmsList
+{
+    public int chainage;
+    public string code;
+    public int? cols;
+    public string description;
+    public string direction;
+    public string genericType;
+    public string geogAddr;
+    public string guid;
+    public int id;
+    public double latitude;
+    public int linkId;
+    public double longitude;
+    public string message;
+    public string road;
+    public int? rows;
+    public string type;
+}
+[System.Serializable]
+public class SignDatum
+{
+    public List<VmsList> vmsList;
+}
+[System.Serializable]
+public class RootSign
+{
+    public List<SignDatum> data;
+}
