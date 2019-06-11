@@ -1,0 +1,180 @@
+ #region BEAM TRANSFORMATIONS
+    private float GetBeamLength(bool bHit, RaycastHit hit)
+    {
+        //???
+        float actualLength = m_beamMaxLength;
+
+        //reset if beam not hitting or hitting new target
+        if (!bHit || (m_lastTarget != null && m_lastTarget != hit.transform))
+        {
+            actualLength = 0f;
+            m_lastTarget = null;
+        }
+        else
+        {
+            //check if beam has hit a new target
+            actualLength = Mathf.Min(hit.distance, m_beamMaxLength);
+            m_lastTarget = hit.transform;
+
+            if (actualLength <= 0)
+            {
+                actualLength = m_beamMaxLength;
+            }
+        }
+        return actualLength;
+    }
+
+    void SetPointerTransform(float length, float thickness)
+    {
+        //if the additional decimal isn't added then the beam position glitches
+        float adjustedLength = length - m_raycastStartDistance;
+        float beamPosition = adjustedLength / (2.00001f);
+
+        m_myPointer.transform.localScale = new Vector3(thickness, thickness, adjustedLength);
+        m_myPointer.transform.localPosition = new Vector3(0f, 0f, beamPosition);
+
+        if (m_showCursor)
+        {
+            m_myCursor.transform.localPosition = new Vector3(0f, 0f, adjustedLength - m_myCursor.transform.localScale.z);
+        }
+    }
+
+    public Vector2 GetMyAxis()
+    {
+        Vector2 myAxis = new Vector2(m_myController.GetAxis().x,
+            m_myController.GetAxis().y);
+        return myAxis;
+    }
+
+    //public void BeamMaxLength(int sceneRef)
+    public void BeamMaxLength(bool model)
+
+    {
+        ////if (sceneRef == 1) m_beamMaxLength = MaxValue;
+        ////else if (sceneRef == 2) m_beamMaxLength = MaxValue * 4;
+        //if (model) m_beamMaxLength = MaxValue;
+        //else if (!model) m_beamMaxLength = MaxValue * 4;
+        //Debug.Log("---------------------m_beamMaxLength ::" + m_beamMaxLength);
+        m_beamMaxLength = MaxValue;
+    }
+    private void InitialisePointer(Material mat)
+    {
+        m_myPointer = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        m_myPointer.transform.parent = transform;
+        m_myPointer.GetComponent<MeshRenderer>().material = mat;
+
+        m_myPointer.GetComponent<BoxCollider>().isTrigger = true;
+        m_myPointer.AddComponent<Rigidbody>().isKinematic = true;
+        m_myPointer.layer = 2;
+    }
+
+    private void InitialiseCursor(Material mat)
+    {
+        m_myCursor = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        
+        m_myCursor.transform.parent = transform;
+
+        m_myCursor.GetComponent<MeshRenderer>().material = mat;
+        m_myCursor.transform.localScale = m_cursorScale;
+
+        m_myCursor.GetComponent<SphereCollider>().isTrigger = true;
+        m_myCursor.AddComponent<Rigidbody>().isKinematic = true;
+        m_myCursor.layer = 2;
+    }
+    //public void ChangeColBeam(bool Camera)
+    //{
+    //    if (Camera)
+    //        {
+    //        CursorChangeCol(m_beamColorCollision);
+    //        PointerChangeCol(m_beamColorCollision);
+    //        }
+    //    else
+    //    {
+    //        CursorChangeCol(m_beamColor);
+    //        PointerChangeCol(m_beamColor);
+    //    }
+    //}
+
+    public void ChangeColBeam(Color col)
+    {
+        CursorChangeCol(col);
+        PointerChangeCol(col);
+    }
+    #endregion
+
+    #region CALCULATE DIRECTION OF SWIPING ON TOUCHPAD
+    private int OnSwipeLeft()
+    {
+        //UnityEngine.Debug.Log("Swipe Left");
+        int mMessageIndex = 1;
+        return mMessageIndex;
+    }
+
+    private int OnSwipeRight()
+    {
+        //UnityEngine.Debug.Log("Swipe Right");
+        int mMessageIndex = 2;
+        return mMessageIndex;
+    }
+
+    private int OnSwipeTop()
+    {
+        //UnityEngine.Debug.Log("Swipe Top");
+        int mMessageIndex = 3;
+        return mMessageIndex;
+    }
+
+    private int OnSwipeBottom()
+    {
+        //UnityEngine.Debug.Log("Swipe Bottom");
+        int mMessageIndex = 4;
+        return mMessageIndex;
+    }
+    protected int CalculateSwipeAction()
+    {
+        isPendingSwipeCheck = false;
+
+        float deltaTime = Time.time - touchStartTime;
+        Vector2 swipeVector = touchEndPosition - touchStartPosition;
+        float velocity = swipeVector.magnitude / deltaTime;
+
+        if ((velocity > SwipeMinVelocity) && (swipeVector.magnitude > SwipeMinDist))
+        {
+            swipeVector.Normalize();
+            float angleOfSwipe = Vector2.Dot(swipeVector, xAxis);
+            angleOfSwipe = Mathf.Acos(angleOfSwipe) * Mathf.Rad2Deg;
+
+            // Left / right
+            if (angleOfSwipe < AngleTolerance)
+            {
+                touchStateTP = OnSwipeRight();
+            }
+            else if ((180.0f - angleOfSwipe) < AngleTolerance)
+            {
+                touchStateTP = OnSwipeLeft();
+            }
+            else
+            {
+                // Top / bottom
+                angleOfSwipe = Vector2.Dot(swipeVector, yAxis);
+                angleOfSwipe = Mathf.Acos(angleOfSwipe) * Mathf.Rad2Deg;
+                if (angleOfSwipe < AngleTolerance)
+                {
+                    touchStateTP = OnSwipeTop();
+                }
+                else if ((180.0f - angleOfSwipe) < AngleTolerance)
+                {
+                    touchStateTP = OnSwipeBottom();
+                }
+                else
+                {
+                    touchStateTP = 0;
+                }
+            }
+        }
+        else
+        {
+            touchStateTP = 0;
+        }
+        return touchStateTP;
+    }
