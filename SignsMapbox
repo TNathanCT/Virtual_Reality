@@ -1,0 +1,57 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using System.IO;
+using Mapbox.Unity.Utilities;
+
+public class SignsMapbox : MonoBehaviour
+{
+
+    public string message;
+    public RootSign RootSign;
+    public GameObject Sign;
+    //SignButton SB;
+    CapsuleScript CS;
+    public string templink;
+    public SignDatum RDatum;
+
+
+    Mapbox.Utils.Vector2d refPoint;
+    float scale;
+    public GameObject ParentofSigns;
+
+    void Start()
+    {
+        //SB = FindObjectOfType<SignButton>();
+        CS = FindObjectOfType<CapsuleScript>();
+        string pathtoSign = "";
+        string SignData = File.ReadAllText(pathtoSign);
+
+
+        RootSign = new RootSign();
+        RootSign = JsonUtility.FromJson<RootSign>(SignData);
+
+        GameObject[] Gobj = GameObject.FindGameObjectsWithTag("RedButton");
+
+
+        for (int z = 0; z < RootSign.data.Count; z++)
+        {
+
+            var _radius = 300;
+
+            GameObject signgobj = Instantiate(Sign);
+
+            float Lat = (float)RootSign.data[z].vmsList[0].latitude;
+            float Long = (float)RootSign.data[z].vmsList[0].longitude;
+
+
+            refPoint = new Mapbox.Utils.Vector2d(10, 10);
+            signgobj.transform.parent = ParentofSigns.transform;
+            Mapbox.Utils.Vector2d Topology = Conversions.GeoToWorldPosition(Lat, Long, refPoint, scale = 0.001f);
+            signgobj.transform.localPosition = new Vector3((float)Topology.x, 0, (float)Topology.y);
+
+            //signgobj.transform.gameObject.GetComponent<SignButton>().message = RootSign.data[z].vmsList[0].message;
+            signgobj.transform.gameObject.GetComponent<CapsuleScript>().message = RootSign.data[z].vmsList[0].message;
+        }
+    }
+}
