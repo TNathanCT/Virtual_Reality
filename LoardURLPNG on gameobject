@@ -1,0 +1,108 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using TMPro;
+
+public class RedButton : MonoBehaviour {
+
+    //public GameObject Quad;
+    //public GameObject boxwithtext;
+    //float position;
+    public string url;
+    //CCTV CCTVScript;
+    public GameObject Screen;
+    public Renderer thisRender;
+    public TextMeshPro text;
+    public string description;
+
+    private void Start()
+    {
+        text.enabled = false;
+        Screen.SetActive(false);
+        // url = CCTVScript.Gobj.transform.gameObject.GetComponent<CCTV>().loadedData.data[i].url;
+        // url = Gobj.transform.gameObject.GetComponent<CCTV>().loadedData.data[i].url;
+    }
+
+    void UsetheScreen(string ActivatetheURL)
+    {
+        StartCoroutine(LoadFromLikeCoroutine(ActivatetheURL));
+    }
+
+
+
+    public IEnumerator LoadFromLikeCoroutine(string LoadtheURL)
+    {
+
+        WWW wwwLoader = new WWW(LoadtheURL);   // create WWW object pointing to the z
+        yield return wwwLoader;         // start loading whatever in that url ( delay happens here )
+        thisRender.material.color = Color.white;              // set white
+        thisRender.material.mainTexture = wwwLoader.texture;  // set loaded image
+
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.gameObject.tag == "GameController")
+        {
+       
+            Screen.SetActive(true);
+            UsetheScreen(url);
+
+
+            text.enabled = true;
+            text.SetText(description);
+
+
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.tag == "GameController")
+        {
+         
+            Screen.SetActive(true);
+            UsetheScreen(url);
+
+            text.enabled = true;
+            text.SetText(description);
+
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.tag == "GameController")
+        {
+            text.enabled = false;
+            Screen.SetActive(false);
+
+        }
+    }
+
+
+
+
+    //private void OnMouseOver()
+    //{        
+    //    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+    //    RaycastHit hit;
+
+    //    if (Physics.Raycast(ray, out hit))
+    //    {
+    //        if (hit.collider.tag == "RedButton"  && Quad.transform.position.y <= 0.9 && boxwithtext.transform.localScale.z <= 0.54)
+    //        {
+
+    //            Quad.transform.position += new Vector3(0f, 1f, 0f) * Time.deltaTime;
+    //            boxwithtext.transform.localScale += new Vector3(0f,0f,1f) * Time.deltaTime;
+    //        }
+
+    //        else if (Quad.transform.position.y >= 0 && boxwithtext.transform.localScale.z >=0 )
+    //        {
+    //            Debug.Log("GoodBye");
+    //            Quad.transform.position -= new Vector3(0f, 1f, 0f) * Time.deltaTime;
+    //            boxwithtext.transform.localScale -= new Vector3(0f, 0f, 1f) * Time.deltaTime;
+    //        }
+    //    }
+    //}
+}
