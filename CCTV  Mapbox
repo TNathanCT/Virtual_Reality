@@ -1,0 +1,93 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using System.IO;
+using System;
+using TMPro;
+using Mapbox.Unity.Utilities;
+
+public class CCTVMapbox : MonoBehaviour
+{
+
+
+    public string url;
+    public CCTVRootObject loadedData;
+    public GameObject Camera;
+    ScriptfortheUnit RB;
+    public string templink;
+    public TempRoot tempfile;
+
+
+    Mapbox.Utils.Vector2d refPoint;
+    float scale;
+    public GameObject ParentofUnits;
+
+    void Start()
+    {
+        RB = FindObjectOfType<ScriptfortheUnit>();
+
+        string path = "";
+        string tempimages = "";
+        string dataAsJson = File.ReadAllText(path);
+        string dataAsJsontemp = File.ReadAllText(tempimages);
+
+
+        loadedData = new CCTVRootObject();
+        loadedData = JsonUtility.FromJson<CCTVRootObject>(dataAsJson);
+
+        tempfile = new TempRoot();
+        tempfile = JsonUtility.FromJson<TempRoot>(dataAsJsontemp);
+
+        for (int i = 0; i < loadedData.data.Count; i++)
+        {
+
+            var _radius = 300;
+
+
+
+
+            GameObject Gobj = Instantiate(Camera);
+            float Lat = (float)loadedData.data[i].latitude;
+            float Long = (float)loadedData.data[i].longitude;
+
+
+            //float xPos = (_radius) * Mathf.Cos(Lat) * Mathf.Cos(Long);
+            //float zPos = (_radius) * Mathf.Cos(Lat) * Mathf.Sin(Long);
+            //float yPos = (_radius) * Mathf.Sin(Lat);
+
+            refPoint = new Mapbox.Utils.Vector2d(10, 10);
+            Gobj.transform.parent = ParentofUnits.transform;
+            Mapbox.Utils.Vector2d Topology = Conversions.GeoToWorldPosition(Lat, Long, refPoint, scale = 0.001f);
+            Gobj.transform.localPosition = new Vector3((float)Topology.x, 0, (float)Topology.y);
+
+            Gobj.transform.gameObject.GetComponent<ScriptfortheUnit>().description = loadedData.data[i].description;
+            Gobj.transform.gameObject.GetComponent<ScriptfortheUnit>().url = tempfile.data[(int)(UnityEngine.Random.Range(0,tempfile.data.Count))].url1;//this should be x
+
+
+
+
+
+        }
+    }
+}
+
+[System.Serializable]
+public class CCTVDatum
+{
+    public bool available;
+    public double chainage;
+    public string description;
+    public string guid;
+    public int id;
+    public double latitude;
+    public int linkId;
+    public double longitude;
+    public string url;
+}
+
+[System.Serializable]
+public class CCTVRootObject
+{
+    public List<CCTVDatum> data;
+}
+
