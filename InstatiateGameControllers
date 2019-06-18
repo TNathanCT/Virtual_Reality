@@ -1,0 +1,88 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using TMPro;
+
+
+public class InstantiateGameControllers : MonoBehaviour {
+
+    public GameObject prefab;
+    public GameObject[] gos;
+
+    AssistheGC AGC;
+    public GameObject ParentofControllers;
+    public GameObject Original;
+
+
+    public void Start()
+    {
+   
+
+        AGC = FindObjectOfType<AssistheGC>();
+
+        gos = new GameObject[4];
+        for(int i = 0; i<gos.Length; i++)
+        {
+            GameObject clone = (GameObject)Instantiate(prefab, Original.transform.position, Original.transform.rotation);
+            gos[i] = clone;
+            clone.transform.parent = ParentofControllers.transform;
+        }
+
+        gos[0].GetComponent<AssistheGC>().GCScreen = GameObject.FindGameObjectWithTag("Screen1");
+        gos[0].GetComponent<AssistheGC>().GCRenderer = GameObject.FindGameObjectWithTag("Screen1").GetComponent<Renderer>();
+        gos[0].GetComponent<AssistheGC>().CCTVtext = GameObject.FindGameObjectWithTag("CCTVText1").GetComponent<TextMeshPro>();
+        gos[0].GetComponent<AssistheGC>().SIGNText = GameObject.FindGameObjectWithTag("SIGNText1").GetComponent<TextMeshPro>();
+
+
+        gos[1].GetComponent<AssistheGC>().GCScreen = GameObject.FindGameObjectWithTag("Screen2");
+        gos[1].GetComponent<AssistheGC>().GCRenderer = GameObject.FindGameObjectWithTag("Screen2").GetComponent<Renderer>();
+        gos[1].GetComponent<AssistheGC>().CCTVtext = GameObject.FindGameObjectWithTag("CCTVText2").GetComponent<TextMeshPro>();
+        gos[1].GetComponent<AssistheGC>().SIGNText = GameObject.FindGameObjectWithTag("SIGNText2").GetComponent<TextMeshPro>();
+
+        gos[2].GetComponent<AssistheGC>().GCScreen = GameObject.FindGameObjectWithTag("Screen3");
+        gos[2].GetComponent<AssistheGC>().GCRenderer = GameObject.FindGameObjectWithTag("Screen3").GetComponent<Renderer>();
+        gos[2].GetComponent<AssistheGC>().CCTVtext = GameObject.FindGameObjectWithTag("CCTVText3").GetComponent<TextMeshPro>();
+        gos[2].GetComponent<AssistheGC>().SIGNText = GameObject.FindGameObjectWithTag("SIGNText3").GetComponent<TextMeshPro>();
+
+        gos[3].GetComponent<AssistheGC>().GCScreen = GameObject.FindGameObjectWithTag("Screen4");
+        gos[3].GetComponent<AssistheGC>().GCRenderer = GameObject.FindGameObjectWithTag("Screen4").GetComponent<Renderer>();
+        gos[3].GetComponent<AssistheGC>().CCTVtext = GameObject.FindGameObjectWithTag("CCTVText4").GetComponent<TextMeshPro>();
+        gos[3].GetComponent<AssistheGC>().SIGNText = GameObject.FindGameObjectWithTag("SIGNText4").GetComponent<TextMeshPro>();
+    }
+
+
+
+
+
+
+
+
+    //   List<GameObject> GameControllers = new List<GameObject>();
+
+    //   public int MaxGC = 4;
+    //   public GameObject GameControllerPrefab;
+    //   public Vector3 mousePos;
+
+    //   void Start()
+    //   {
+    //       Vector3 mousePos = new Vector3(Input.mousePosition.x, 0f, 0f);
+    //   }
+
+    //   void Update () {
+    //       if (Input.GetMouseButtonDown(2) && GameControllers.Count < MaxGC)
+    //       {
+
+    //           GameObject GameControl = (GameObject)Instantiate(GameControllerPrefab);
+    //           GameControllers.Add(GameControl);
+
+    //       }
+
+    //       if (Input.GetKeyDown(KeyCode.Space))
+    //       {
+    //           foreach(GameObject GameControl in GameControllers)
+    //           {
+    //               Destroy(GameControl);
+    //           }
+    //       }
+    //}
+}
