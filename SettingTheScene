@@ -1,0 +1,52 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using Valve.VR.InteractionSystem;
+
+public class PreptheScene : MonoBehaviour {
+
+
+    public GameObject Player;
+    public GameObject AlltheSignsandCCTV;
+    public GameObject TheGrid;
+
+    Vector3 initialScale;
+    GameObject tempAnchor;
+
+
+    public bool SelectGrid;
+    
+
+	void Start () {
+        AlltheSignsandCCTV.SetActive(false);
+        TheGrid.SetActive(true);
+        SelectGrid = false;
+
+        tempAnchor = new GameObject("anchorPoint");
+        initialScale = tempAnchor.transform.localScale;
+
+    }
+     ///  <param name="anchorPoint"></param> A gameobject created as the centre of scaling
+    public IEnumerator LowerthePlayer(float time, GameObject anchorPoint)
+    {
+        Vector3 originalScale = Player.transform.localScale;
+        //Vector3 destinationScale = new Vector3(22.0f, 22.0f, 22.0f);
+        float currentTime = 0f;
+        initialScale = anchorPoint.transform.localScale;
+        Vector3 targetScale = new Vector3();
+    
+        anchorPoint.transform.localScale = targetScale;
+
+
+
+        yield return null;
+        //do
+        //{
+        //    Player.transform.localScale = Vector3.Lerp(originalScale, destinationScale, currentTime / time);
+        //    currentTime += Time.deltaTime;
+        //    yield return null;
+        //}
+        //while (currentTime <= time);
+
+    }
+}
